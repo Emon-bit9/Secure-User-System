@@ -4,16 +4,56 @@ This is a PHP-based web application demonstrating advanced cryptographic securit
 
 ## Architecture
 
+### Security Layered Architecture
+
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend       │    │   Database      │
-├─────────────────┤    ├──────────────────┤    ├─────────────────┤
-│ login.php       │───►│ process_login.php│───►│ users           │
-│ register.php    │───►│ process_register │───►│ └─encrypted     │
-│ dashboard.php   │───►│ functions.php    │───►│ posts           │
-│ see_posts.php   │───►│ Security.php     │───►│ └─encrypted     │
-│ allpost.php     │    │ config.php       │    │ └─mac_verified  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION LAYER                       │
+├─────────────────────────────────────────────────────────────────┤
+│  login.php  │  register.php  │  dashboard.php  │  see_posts.php │
+│             │                │                 │  allpost.php   │
+└─────────────┴────────────────┴─────────────────┴────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      SECURITY MIDDLEWARE                        │
+├─────────────────────────────────────────────────────────────────┤
+│  • Session Management (HTTP-only, Secure Cookies)              │
+│  • Security Headers (CSP, XSS, Frame Protection)               │
+│  • Input Validation & Sanitization                             │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│  process_login.php  │  process_register.php  │  functions.php  │
+└─────────────────────┴─────────────────────────┴─────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    CRYPTOGRAPHIC LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│                         Security.php                            │
+│  ┌─────────────────┬─────────────────┬─────────────────────────┐ │
+│  │   ENCRYPTION    │    HASHING      │    INTEGRITY CHECK     │ │
+│  │  AES-256-CBC    │ bcrypt + salt   │    HMAC-SHA256        │ │
+│  │  Per-user keys  │ Secure random   │    MAC verification   │ │
+│  └─────────────────┴─────────────────┴─────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        DATA LAYER                               │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐    ┌─────────────────────────────────┐  │
+│  │       USERS         │    │           POSTS                 │  │
+│  │ • encrypted_email   │    │ • encrypted_content             │  │
+│  │ • password_hash     │    │ • initialization_vector         │  │
+│  │ • salt              │    │ • mac_signature                 │  │
+│  │ • encryption_key    │    │ • user_id (FK)                  │  │
+│  └─────────────────────┘    └─────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## Core Components
@@ -51,14 +91,6 @@ users (id, username, password_hash, salt, encryption_key, iv, email, created_at)
 posts (id, user_id, encrypted_content, iv, mac, created_at)
 ```
 
-## Installation
-
-1. Import `Database/secure_user_system.sql`
-2. Configure database settings in `includes/config.php`
-3. Deploy to PHP-enabled web server
-4. Access via web browser
-
-
 ## Project Structure
 
 ```
@@ -89,14 +121,14 @@ secure-user-system/
 
 Based on CSE447 Lab Project specifications:
 
-| Requirement | Status | Implementation |
-|-------------|--------|---------------|
-| 1. Login/Register System | ✓ Complete | Full UI with form processing |
-| 2. Encrypted User Info Storage | ✓ Complete | AES-256-CBC encryption |
-| 3. Password Hashing & Salting | ✓ Complete | bcrypt + custom salt |
-| 4. Separate Credential Check | ✓ Complete | Dedicated verification methods |
-| 5. Key Management Module | ✓ Complete | Security class with full crypto operations |
-| 6. Encrypted Post/View System | ✓ Complete | End-to-end encryption for content |
-| 7. Database Encryption Protection | ✓ Complete | All sensitive data encrypted |
-| 8. MAC Integrity Check (Optional) | ✓ Complete | HMAC-SHA256 verification |
+| Requirement | Implementation Details |
+|-------------|----------------------|
+| **1. Login/Register System** | Complete authentication system with `login.php`, `register.php` interfaces and dedicated processing scripts with form validation, error handling, and secure redirects |
+| **2. Encrypted User Info Storage** | User emails encrypted using AES-256-CBC with individual IVs before database storage. Encryption keys managed per-user with secure random generation |
+| **3. Password Hashing & Salting** | bcrypt hashing with PASSWORD_BCRYPT constant, custom 32-character hex salts generated via secure random bytes, password+salt combination before hashing |
+| **4. Separate Credential Check** | Dedicated `loginUser()` method in Database class and `verifyPassword()` in Security class with prepared statements and secure comparison |
+| **5. Key Management Module** | Complete Security.php class handles encryption/decryption, key generation, MAC operations. Per-user 256-bit encryption keys with global encryption key for system data |
+| **6. Encrypted Post/View System** | Posts encrypted with user-specific keys using AES-256-CBC. Decryption on retrieval with MAC verification. Separate methods for personal and all-user post viewing |
+| **7. Database Encryption Protection** | All sensitive data encrypted: emails (AES-256-CBC), passwords (bcrypt), posts (AES-256-CBC). Even with database access, no plaintext data recoverable |
+| **8. MAC Integrity Check (Optional)** | HMAC-SHA256 implementation for all encrypted content. MAC verification before decryption with visual feedback for integrity status and tamper detection |
 
