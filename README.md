@@ -1,6 +1,6 @@
 # Secure User System
 
-This is a PHP-based web application demonstrating advanced cryptographic security principles for user authentication and encrypted content management.
+This is a PHP-based minimal web application demonstrating advanced cryptographic security principles for user authentication and encrypted content management.
 
 ## Core Components
 
