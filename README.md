@@ -2,60 +2,6 @@
 
 This is a PHP-based web application demonstrating advanced cryptographic security principles for user authentication and encrypted content management.
 
-## Architecture
-
-### Security Layered Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        PRESENTATION LAYER                       │
-├─────────────────────────────────────────────────────────────────┤
-│  login.php  │  register.php  │  dashboard.php  │  see_posts.php │
-│             │                │                 │  allpost.php   │
-└─────────────┴────────────────┴─────────────────┴────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      SECURITY MIDDLEWARE                        │
-├─────────────────────────────────────────────────────────────────┤
-│  • Session Management (HTTP-only, Secure Cookies)              │
-│  • Security Headers (CSP, XSS, Frame Protection)               │
-│  • Input Validation & Sanitization                             │
-└─────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      APPLICATION LAYER                          │
-├─────────────────────────────────────────────────────────────────┤
-│  process_login.php  │  process_register.php  │  functions.php  │
-└─────────────────────┴─────────────────────────┴─────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    CRYPTOGRAPHIC LAYER                          │
-├─────────────────────────────────────────────────────────────────┤
-│                         Security.php                            │
-│  ┌─────────────────┬─────────────────┬─────────────────────────┐ │
-│  │   ENCRYPTION    │    HASHING      │    INTEGRITY CHECK     │ │
-│  │  AES-256-CBC    │ bcrypt + salt   │    HMAC-SHA256        │ │
-│  │  Per-user keys  │ Secure random   │    MAC verification   │ │
-│  └─────────────────┴─────────────────┴─────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        DATA LAYER                               │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────┐    ┌─────────────────────────────────┐  │
-│  │       USERS         │    │           POSTS                 │  │
-│  │ • encrypted_email   │    │ • encrypted_content             │  │
-│  │ • password_hash     │    │ • initialization_vector         │  │
-│  │ • salt              │    │ • mac_signature                 │  │
-│  │ • encryption_key    │    │ • user_id (FK)                  │  │
-│  └─────────────────────┘    └─────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
 ## Core Components
 
 | Component | Purpose | Security Implementation |
@@ -119,7 +65,7 @@ secure-user-system/
 
 ## Requirements Implementation
 
-Based on CSE447 Lab Project specifications:
+Based on Project requirements:
 
 | Requirement | Implementation Details |
 |-------------|----------------------|
@@ -131,4 +77,58 @@ Based on CSE447 Lab Project specifications:
 | **6. Encrypted Post/View System** | Posts encrypted with user-specific keys using AES-256-CBC. Decryption on retrieval with MAC verification. Separate methods for personal and all-user post viewing |
 | **7. Database Encryption Protection** | All sensitive data encrypted: emails (AES-256-CBC), passwords (bcrypt), posts (AES-256-CBC). Even with database access, no plaintext data recoverable |
 | **8. MAC Integrity Check (Optional)** | HMAC-SHA256 implementation for all encrypted content. MAC verification before decryption with visual feedback for integrity status and tamper detection |
+
+## Architecture
+
+### Security Layered Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION LAYER                       │
+├─────────────────────────────────────────────────────────────────┤
+│  login.php  │  register.php  │  dashboard.php  │  see_posts.php │
+│             │                │                 │  allpost.php   │
+└─────────────┴────────────────┴─────────────────┴────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      SECURITY MIDDLEWARE                        │
+├─────────────────────────────────────────────────────────────────┤
+│  • Session Management (HTTP-only, Secure Cookies)              │
+│  • Security Headers (CSP, XSS, Frame Protection)               │
+│  • Input Validation & Sanitization                             │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│  process_login.php  │  process_register.php  │  functions.php  │
+└─────────────────────┴─────────────────────────┴─────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    CRYPTOGRAPHIC LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│                         Security.php                            │
+│  ┌─────────────────┬─────────────────┬─────────────────────────┐ │
+│  │   ENCRYPTION    │    HASHING      │    INTEGRITY CHECK     │ │
+│  │  AES-256-CBC    │ bcrypt + salt   │    HMAC-SHA256        │ │
+│  │  Per-user keys  │ Secure random   │    MAC verification   │ │
+│  └─────────────────┴─────────────────┴─────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        DATA LAYER                               │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐    ┌─────────────────────────────────┐  │
+│  │       USERS         │    │           POSTS                 │  │
+│  │ • encrypted_email   │    │ • encrypted_content             │  │
+│  │ • password_hash     │    │ • initialization_vector         │  │
+│  │ • salt              │    │ • mac_signature                 │  │
+│  │ • encryption_key    │    │ • user_id (FK)                  │  │
+│  └─────────────────────┘    └─────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
