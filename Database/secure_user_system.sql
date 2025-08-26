@@ -3,7 +3,6 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2024 at 01:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,8 +65,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password_hash`, `salt`, `encryption_key`, `iv`, `email`, `created_at`) VALUES
-(1, 'Imranul Hasan', '$2y$10$MiQcnr3p6oh50l9xh/0Hj.fI98FG89kJGyPRkLC7dYI4Bd1oe.426', '565d28959d3d0688a0fb74f2f49c7306', 'e6d547ddee9ea8c2d3911962a09e25bf9783c483ec880fc476ae0b9f8fbdc4c0', '5522ff79a9e40aeca6e5acd767ca5d79', 'dF6PdI2wRF3PoKUfi6You2Bq7hYoBpFrhpondXIsIsY=', '2025-01-02 16:22:26'),
-(2, 'Emon', '$2y$10$ujKoJeF1yh7Krx7FbNsCTe5spU5CH2kmieNZIQCwWEsFohP3OeLES', 'bd376b61c41cedd36a430af19a8798f7', '0660b71a6eba31f3c6582d1e19b2f0f2902767dda7ae56a60f85ab5573be44f8', 'e7f1f01fce1731d5de75f715252e8e60', 'KhoexdegYCWWME0UlHKk+uqLdmmdkcrHf3BcuoDZaj0=', '2024-01-03 15:55:39');
+(1, 'Imranul Hasan', '$2y$10$MiQcnr3p6oh50l9xh/0Hj.fI98FG89kJGyPRkLC7dYI4Bd1oe.426', '565d28959d3d0688a0fb74f2f49c7306', 'e6d547ddee9ea8c2d3911962a09e25bf9783c483ec880fc476ae0b9f8fbdc4c0', '5522ff79a9e40aeca6e5acd767ca5d79', 'dF6PdI2wRF3PoKUfi6You2Bq7hYoBpFrhpondXIsIsY=', '2024-12-26 16:22:26'),
+(2, 'Emon', '$2y$10$ujKoJeF1yh7Krx7FbNsCTe5spU5CH2kmieNZIQCwWEsFohP3OeLES', 'bd376b61c41cedd36a430af19a8798f7', '0660b71a6eba31f3c6582d1e19b2f0f2902767dda7ae56a60f85ab5573be44f8', 'e7f1f01fce1731d5de75f715252e8e60', 'KhoexdegYCWWME0UlHKk+uqLdmmdkcrHf3BcuoDZaj0=', '2024-12-27 15:55:39');
 
 --
 -- Indexes for dumped tables
