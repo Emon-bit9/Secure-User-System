@@ -21,7 +21,7 @@ This is a PHP-based web application demonstrating advanced cryptographic securit
 - Secure session management
 - Encrypted content posting system
 
-## Technology Stack
+## Tech Stack
 
 - **Frontend**: HTML5 + CSS3
 - **Database**: MariaDB 10.4.32 / MySQL
