@@ -19,9 +19,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'secure_user_system');
 
-// Generate secure random key
-$encKey = base64_encode(random_bytes(32));
-define('ENCRYPTION_KEY', $encKey);
+// Fixed encryption key for consistent decryption
+define('ENCRYPTION_KEY', 'abcd1234567890abcdef1234567890abcdef1234567890abcdef1234567890ef');
 
 // Set secure headers
 header("X-Frame-Options: DENY");
